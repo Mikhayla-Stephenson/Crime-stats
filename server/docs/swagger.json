@@ -1,0 +1,291 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CAB230 n10206019 API",
+    "description": "This API has been devolped in conjuction with the CAB230 web-computing assignment",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Returns all offences",
+        "description": "Registers a new user account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": "{\"email\": \"demo-user@gmail.com\",\n\"password\": \"demouserpassword\"}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "schema": {
+                "example": "{\"message\": \"yay! you've successfully registered your user account :)\"}"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "schema": {
+                "example": "{\"message\": \"oops! It looks like that user already exists :(\"}"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Login with an existing user account",
+        "description": "Login with an existing user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": "{\"email\": \"demo-user@gmail.com\",\n\"password\": \"demouserpassword\"}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": "{\"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1Nzg2LCJlbWFpbCI6ImRlbW8xMjM0QGdtYWlsLmNvbSJ9LCJpYXQiOjE1NTUzMjQ2MDIsImV4cCI6MTU1NTQxMTAwMn0.mo85iKuAQ_h8n8-6pkeNNs5CCnV0G8hScxhi_ml_Q6c\",\"token_type\": \"Bearer\", \"expires_in\": 86400}"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": "{\"message\": \"invalid login - bad password\"}"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search?": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Returns Search results",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "offence",
+            "description": "Name of the Offence to search for",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "area",
+            "schema": {
+              "type": "string"
+            },
+            "description": "List of comma-separated Areas (LGAs) to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "schema": {
+              "type": "string"
+            },
+            "description": "List of comma-separated Ages to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "gender",
+            "schema": {
+              "type": "string"
+            },
+            "description": "List of comma-separated Genders to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "string"
+            },
+            "description": "List of comma-separated Years to filter search results by"
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "schema": {
+              "type": "string"
+            },
+            "description": "List of comma-separated Months to filter search results by (1-12)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "query": {
+                      "offence": "Homicide (Murder)"
+                    },
+                    "result": [
+                      {
+                        "LGA": "Aurukun Shire Council",
+                        "total": 4,
+                        "lat": -27.470812,
+                        "lng": 153.022455
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "message": "oh no! it looks like your authorization token is invalid..."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offences": {
+      "get": {
+        "tags": [
+          "Helpers"
+        ],
+        "summary": "Returns all offences",
+        "description": "Returns a list of offences",
+        "operationId": "getoffences",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "offences": [
+                      "Advertising Prostitution",
+                      "Armed Robbery"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/areas": {
+      "get": {
+        "tags": [
+          "Helpers"
+        ],
+        "description": "Returns all areas",
+        "operationId": "getareas",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": "{ 'areas':[Aurukun Shire Council','Balonne Shire Council']}"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ages": {
+      "get": {
+        "tags": [
+          "Helpers"
+        ],
+        "summary": "Returns all ages",
+        "description": "Returns a list of ages",
+        "operationId": "getages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "ages": [
+                      "Adult,Juvenile"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/genders": {
+      "get": {
+        "tags": [
+          "Helpers"
+        ],
+        "description": "Returns all genders",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/years": {
+      "get": {
+        "tags": [
+          "Helpers"
+        ],
+        "description": "Returns all years",
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  }
+}
